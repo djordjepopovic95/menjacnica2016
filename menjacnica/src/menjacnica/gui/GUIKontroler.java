@@ -12,6 +12,8 @@ import menjacnica.Valuta;
 import menjacnica.gui.models.MenjacnicaTableModel;
 
 public class GUIKontroler {
+	
+	protected static Menjacnica sistem = new Menjacnica();
 
 	private static MenjacnicaGUI glavniProzor;
 
@@ -35,14 +37,14 @@ public class GUIKontroler {
 
 		if (table.getSelectedRow() != -1) {
 			MenjacnicaTableModel model = (MenjacnicaTableModel) (table.getModel());
-			ObrisiKursGUI prozor = new ObrisiKursGUI(glavniProzor, model.vratiValutu(table.getSelectedRow()));
+			ObrisiKursGUI prozor = new ObrisiKursGUI(model.vratiValutu(table.getSelectedRow()));
 			prozor.setLocationRelativeTo(glavniProzor.getContentPane());
 			prozor.setVisible(true);
 		}
 	}
 
 	public static void prikaziDodajKursGUI() {
-		DodajKursGUI prozor = new DodajKursGUI(glavniProzor);
+		DodajKursGUI prozor = new DodajKursGUI();
 		prozor.setLocationRelativeTo(glavniProzor.getContentPane());
 		prozor.setVisible(true);
 	}
@@ -50,13 +52,13 @@ public class GUIKontroler {
 	public static void prikaziIzvrsiZamenuGUI(JTable table) {
 		if (table.getSelectedRow() != -1) {
 			MenjacnicaTableModel model = (MenjacnicaTableModel) (table.getModel());
-			IzvrsiZamenuGUI prozor = new IzvrsiZamenuGUI(glavniProzor, model.vratiValutu(table.getSelectedRow()));
+			IzvrsiZamenuGUI prozor = new IzvrsiZamenuGUI(model.vratiValutu(table.getSelectedRow()));
 			prozor.setLocationRelativeTo(glavniProzor.getContentPane());
 			prozor.setVisible(true);
 		}
 	}
 
-	public static void ucitajIzFajla(Menjacnica sistem, JTable table) {
+	public static void ucitajIzFajla(JTable table) {
 		try {
 			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showOpenDialog(glavniProzor.getContentPane());
@@ -86,7 +88,7 @@ public class GUIKontroler {
 			valuta.setSrednji(Double.parseDouble(srednji));
 
 			// Dodavanje valute u kursnu listu
-			glavniProzor.sistem.dodajValutu(valuta);
+			sistem.dodajValutu(valuta);
 
 			// Osvezavanje glavnog prozora
 			glavniProzor.prikaziSveValute();
@@ -99,7 +101,7 @@ public class GUIKontroler {
 		}
 	}
 
-	public static void sacuvajUFajl(Menjacnica sistem) {
+	public static void sacuvajUFajl() {
 		try {
 			JFileChooser fc = new JFileChooser();
 			int returnVal = fc.showSaveDialog(glavniProzor.getContentPane());
@@ -130,7 +132,7 @@ public class GUIKontroler {
 
 	public static void obrisiValutu(Valuta valuta) {
 		try {
-			glavniProzor.sistem.obrisiValutu(valuta);
+			sistem.obrisiValutu(valuta);
 
 			glavniProzor.prikaziSveValute();
 		} catch (Exception e1) {
@@ -140,7 +142,7 @@ public class GUIKontroler {
 	}
 
 	public static double izvrsiZamenu(Valuta valuta, boolean rdbtnProdaja, String iznos) {
-		double konacniIznos = glavniProzor.sistem.izvrsiTransakciju(valuta, rdbtnProdaja, Double.parseDouble(iznos));
+		double konacniIznos = sistem.izvrsiTransakciju(valuta, rdbtnProdaja, Double.parseDouble(iznos));
 		return konacniIznos;
 	}
 }
